@@ -28,5 +28,6 @@ build {
 
   provisioner "ansible-local" {
     playbook_file = "./ansible/main.yml"
+    playbook_dir = "./ansible"
   }
 }
