@@ -4,19 +4,20 @@ variable "vagrant_base_box" {
   default = "trombik/ansible-debian-11-amd64"
 }
 
-source "vagrant" "tsdb_server" {
+source "vagrant" "tsdb_server_local" {
   source_path = var.vagrant_base_box
   provider = "virtualbox"
   communicator = "ssh"
   ssh_username = "vagrant"
   ssh_password = "vagrant"
+  output_dir = ".tsdb-server-local"
 }
 
 build {
-  name = "tsdb_server_vagrant"
+  name = "tsdb_server_vagrant_local"
 
   sources = [
-    "source.vagrant.tsdb_server"
+    "source.vagrant.tsdb_server_local"
   ]
 
   # Not needed with the Ansible-enabled base image.
