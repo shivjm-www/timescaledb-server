@@ -39,11 +39,16 @@
 
 - name: Set PostgreSQL to trust everything
   copy:
-    dest: "/etc/postgresql/14/pg_hba.conf"
-    content: "host all all trust"
+    dest: "/etc/postgresql/14/main/pg_hba.conf"
+    content: "host all all 0.0.0.0/0 trust"
     owner: "{{ timescaledb_linux_user }}"
     mode: "0600"
   register: postgresql_trust
+
+- name: Set PostgreSQL to listen for connections on all addresses
+  lineinfile:
+    path: "/etc/postgresql/14/main/postgresql.conf"
+    line: "listen_addresses = '*'"
 
 - name: Compute MD5 of PostgreSQL configuration
   stat: path=/etc/postgresql/14/main/postgresql.conf get_md5=yes
