@@ -1,3 +1,12 @@
 ---
-- ./playbooks/timescaledb.yml
-- ./playbooks/promscale.yml
+- name: Install TimescaleDB
+  hosts: all
+  become: yes
+  tasks:
+    - include_tasks: ./tasks/timescaledb.yml
+
+- name: Install Promscale
+  hosts: all
+  become: yes
+  tasks:
+    - include_tasks: ./tasks/promscale.yml
