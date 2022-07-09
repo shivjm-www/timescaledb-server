@@ -1,6 +1,7 @@
 variable "vagrant_base_box" {
   type = string
-  default = "geerlingguy/debian11"
+  # default = "geerlingguy/debian11"
+  default = "trombik/ansible-debian-11-amd64"
 }
 
 source "vagrant" "tsdb_server" {
@@ -18,13 +19,14 @@ build {
     "source.vagrant.tsdb_server"
   ]
 
-  provisioner "shell" {
-    scripts = [
-      "./scripts/ansible.sh"
-    ]
+  # Not needed with the Ansible-enabled base image.
+  # provisioner "shell" {
+  #   scripts = [
+  #     "./scripts/ansible.sh"
+  #   ]
 
-    execute_command = "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
-  }
+  #   execute_command = "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+  # }
 
   provisioner "ansible-local" {
     playbook_file = "./ansible/main.yml"
