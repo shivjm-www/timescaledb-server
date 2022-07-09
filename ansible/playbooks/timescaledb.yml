@@ -1,0 +1,57 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Install base packages
+      apt:
+        pkg:
+          - gnupg
+          - postgresql-common
+          - apt-transport-https
+          - wget
+        update_cache: yes
+        state: present
+
+    - name: Add TimescaleDB to sources list
+      apt_repository:
+        repo: "deb https://packagecloud.io/timescale/timescaledb/debian/ {{ ansible_distribution_release }} main"
+        state: present
+
+    - name: Add TimescaleDB PPA key
+      apt_key:
+        id: "1005FB68604CE9B8F6879CF759F18EDF47F24417"
+        url: "https://packagecloud.io/timescale/timescaledb/gpgkey"
+        filename: timescaledb
+        state: present
+      register: tsdb_repo
+
+    - name: Update apt cache
+      when: timescaledb_repo.changed
+      apt:
+        update_cache: true
+
+    - name: Install TimescaleDB and PostgreSQL dev tools
+      apt:
+        pkg:
+          - "{{ timescaledb_package }}"
+          - "{{ postgresql_dev_package }}"
+        update_cache: yes
+        state: present
+
+    - name: Compute MD5 of PostgreSQL configuration
+      stat: path=/etc/postgresql/14/main/postgresql.conf get_md5=yes
+      register: existing_postgresql
+
+    - name: Tune TimescaleDB
+      script: "timescaledb-tune --yes"
+
+    - name: Compute new MD5 of PostgreSQL configuration
+      stat: path=/etc/postgresql/14/main/postgresql.conf get_md5=yes
+      register: new_postgresql
+
+    - name: Restart PostgreSQL
+      service:
+        name: postgresql
+        state: restarted
+      when: "{{ existing_postgresql.stat.md5 }} != {{ new_postgresql.stat.md5 }}"
