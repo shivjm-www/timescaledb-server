@@ -37,6 +37,14 @@
     update_cache: yes
     state: present
 
+- name: Set PostgreSQL to trust everything
+  copy:
+    dest: "/etc/postgresql/14/pg_hba.conf"
+    content: "host all all trust"
+    owner: "{{ timescaledb_linux_user }}"
+    mode: "0600"
+  register: postgresql_trust
+
 - name: Compute MD5 of PostgreSQL configuration
   stat: path=/etc/postgresql/14/main/postgresql.conf get_md5=yes
   register: existing_postgresql
