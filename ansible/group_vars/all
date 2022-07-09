@@ -1,5 +1,5 @@
 ---
 timescaledb_package: timescaledb-2-postgresql-14
-postgresql_dev_package: postgresql-server-dev-14
+postgresql_dev_package: postgresql-server-dev-all
 
 timescaledb_linux_user: "postgres"
