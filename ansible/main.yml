@@ -1,2 +1,3 @@
 ---
 - ./playbooks/timescaledb.yml
+- ./playbooks/promscale.yml

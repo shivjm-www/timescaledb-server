@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Install Promscale
+      apt:
+        - promscale-extension-postgresql-14
+      state: present
