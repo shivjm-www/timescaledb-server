@@ -60,4 +60,4 @@
   service:
     name: postgresql
     state: restarted
-  when: "'{{ existing_postgresql.stat.md5 }}' != '{{ new_postgresql.stat.md5 }}' or postgresql_trust.changed"
+  when: "existing_postgresql.stat.md5 != new_postgresql.stat.md5 or postgresql.trust_changed"
