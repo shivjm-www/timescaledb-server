@@ -9,18 +9,17 @@
     update_cache: yes
     state: present
 
-- name: Add TimescaleDB to sources list
-  apt_repository:
-    repo: "deb https://packagecloud.io/timescale/timescaledb/debian/ {{ ansible_distribution_release }} main"
-    state: present
-
 - name: Add TimescaleDB PPA key
   apt_key:
     id: "1005FB68604CE9B8F6879CF759F18EDF47F24417"
     url: "https://packagecloud.io/timescale/timescaledb/gpgkey"
-    filename: timescaledb
     state: present
-  register: tsdb_repo
+
+- name: Add TimescaleDB to sources list
+  apt_repository:
+    repo: "deb https://packagecloud.io/timescale/timescaledb/debian/ {{ ansible_distribution_release }} main"
+    state: present
+  register: timescaledb_repo
 
 - name: Update apt cache
   when: timescaledb_repo.changed
