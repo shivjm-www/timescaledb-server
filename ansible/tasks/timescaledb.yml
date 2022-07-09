@@ -1,13 +1,15 @@
 ---
-- name: Install base packages
-  apt:
-    pkg:
-      - gnupg
-      - postgresql-common
-      - apt-transport-https
-      - wget
-    update_cache: yes
+- name: Add PostgreSQL key
+  apt_key:
+    id: "B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8"
+    url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
     state: present
+
+- name: Add PostgreSQL repository
+  apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    state: present
+  register: postgresql_repo
 
 - name: Add TimescaleDB PPA key
   apt_key:
@@ -21,16 +23,17 @@
     state: present
   register: timescaledb_repo
 
-- name: Update apt cache
-  when: timescaledb_repo.changed
-  apt:
-    update_cache: true
-
 - name: Install TimescaleDB and PostgreSQL dev tools
   apt:
     pkg:
       - "{{ timescaledb_package }}"
+      - timescaledb-tools
       - "{{ postgresql_dev_package }}"
+      - gnupg
+      - postgresql-common
+      - postgresql-14
+      - apt-transport-https
+      - wget
     update_cache: yes
     state: present
 
