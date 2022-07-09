@@ -9,7 +9,6 @@ source "vagrant" "tsdb_server" {
   communicator = "ssh"
   ssh_username = "vagrant"
   ssh_password = "vagrant"
-  skip_add = true
 }
 
 build {
