@@ -42,7 +42,7 @@
   register: existing_postgresql
 
 - name: Tune TimescaleDB
-  script: "timescaledb-tune --yes"
+  shell: "timescaledb-tune --yes"
 
 - name: Compute new MD5 of PostgreSQL configuration
   stat: path=/etc/postgresql/14/main/postgresql.conf get_md5=yes
