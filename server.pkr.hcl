@@ -23,6 +23,8 @@ build {
     scripts = [
       "./scripts/ansible.sh"
     ]
+
+    execute_command = "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
   }
 
   provisioner "ansible-local" {
