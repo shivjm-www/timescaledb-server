@@ -46,7 +46,6 @@ source "hyperv-vmcx" "tsdb_server_local" {
   guest_additions_mode = "none"
   headless = true
   keep_registered = true
-  skip_export = true
   communicator = "ssh"
   generation = 2
   enable_dynamic_memory = true
