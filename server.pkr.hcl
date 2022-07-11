@@ -69,7 +69,6 @@ source "hyperv-vmcx" "tsdb_server_local" {
   shutdown_command = "echo 'box' | sudo -S shutdown -P now"
   guest_additions_mode = "none"
   headless = true
-  keep_registered = true
   communicator = "ssh"
   generation = 2
   enable_dynamic_memory = true
