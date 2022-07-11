@@ -14,7 +14,7 @@
 
 - name: Configure pgBackRest
   template:
-    src: "pgbackrest.conf.tmpl"
+    src: "../files/pgbackrest.conf.tmpl"
     dest: "/etc/pgbackrest/pgbackrest.conf"
 
 - name: Configure PostgreSQL
