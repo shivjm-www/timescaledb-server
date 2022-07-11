@@ -8,18 +8,18 @@ packer {
 }
 
 variable "hyperv_base_vmcx" {
-  type = string
+  type        = string
   description = "Base Hyper-V machine with Debian 11 and Ansible. (Must be path to export directory, not .vmcx file.)"
-  default = "./debian11-ansible-vm"
+  default     = "./debian11-ansible-vm"
 }
 
 variable "hyperv_switch" {
-  type = string
+  type    = string
   default = "Default Switch"
 }
 
 variable "do_token" {
-  type = string
+  type      = string
   sensitive = true
 }
 
@@ -28,13 +28,13 @@ variable "do_region" {
 }
 
 variable "do_droplet_size" {
-  type = string
+  type        = string
   description = "Size of Droplet to use to build image."
-  default = "c-4"
+  default     = "c-4"
 }
 
 variable "do_base_image" {
-  type = string
+  type    = string
   default = "debian-11-x64"
 }
 
@@ -63,27 +63,27 @@ variable "pgbackrest_s3_key_secret" {
 }
 
 source "hyperv-vmcx" "tsdb_server_local" {
-  clone_from_vmcx_path = var.hyperv_base_vmcx
-  ssh_username = "box"
-  ssh_password = "box"
-  shutdown_command = "echo 'box' | sudo -S shutdown -P now"
-  guest_additions_mode = "none"
-  headless = true
-  communicator = "ssh"
-  generation = 2
+  clone_from_vmcx_path  = var.hyperv_base_vmcx
+  ssh_username          = "box"
+  ssh_password          = "box"
+  shutdown_command      = "echo 'box' | sudo -S shutdown -P now"
+  guest_additions_mode  = "none"
+  headless              = true
+  communicator          = "ssh"
+  generation            = 2
   enable_dynamic_memory = true
-  disk_block_size = 1
-  switch_name = var.hyperv_switch
+  disk_block_size       = 1
+  switch_name           = var.hyperv_switch
 }
 
 source "digitalocean" "tsdb_server" {
-  api_token = var.do_token
-  region = var.do_region
-  size = var.do_droplet_size
-  image = var.do_base_image
+  api_token          = var.do_token
+  region             = var.do_region
+  size               = var.do_droplet_size
+  image              = var.do_base_image
   private_networking = true
-  tags = ["packer", "packer-building"]
-  ssh_username = "root"
+  tags               = ["packer", "packer-building"]
+  ssh_username       = "root"
 }
 
 build {
@@ -106,7 +106,7 @@ build {
 
   provisioner "ansible-local" {
     playbook_file = "./ansible/main.yml"
-    playbook_dir = "./ansible"
+    playbook_dir  = "./ansible"
 
     extra_arguments = [
       "--extra-vars", "\"pgbackrest_cipher_pass=${var.pgbackrest_cipher_pass}\"",
