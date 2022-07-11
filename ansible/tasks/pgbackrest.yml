@@ -1,0 +1,34 @@
+---
+- name: Install pgBackRest
+  apt:
+    pkg:
+      - pgbackrest
+    state: present
+
+- name: Create pgBackRest directory
+  file:
+    path: "{{ pgbackrest_directory }}"
+    owner: "{{ timescaledb_linux_user }}"
+    mode: "0750"
+    state: directory
+
+- name: Configure pgBackRest
+  template:
+    src: "pgbackrest.conf.tmpl"
+    dest: "/etc/pgbackrest/pgbackrest.conf"
+
+- name: Configure PostgreSQL
+  lineinfile:
+    path: "{{ postgresql_directory }}/postgresql.conf"
+    regexp: "^\\s*{{ item.setting }}\\s*=\\s*"
+    line: "{{ item.setting }} = {{ item.value }}"
+    state: present
+  loop:
+    - setting: archive_command
+      value: "'pgbackrest --stanza=demo archive-push %p'"
+    - setting: archive_mode
+      value: "on"
+    - setting: max_wal_senders
+      value: "3"
+    - setting: wal_level
+      value: "replica"

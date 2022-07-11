@@ -4,3 +4,7 @@ timescaledb_linux_user: "postgres"
 
 postgresql_dev_package: postgresql-server-dev-all
 postgresql_directory: "/etc/postgresql/14"
+
+pgbackrest_directory: "/var/lib/pgbackrest"
+pgbackrest_retention_days: "30"
+pgbackrest_differential_retention: "5"
