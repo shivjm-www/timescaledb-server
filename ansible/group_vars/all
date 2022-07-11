@@ -3,7 +3,7 @@ timescaledb_package: timescaledb-2-postgresql-14
 timescaledb_linux_user: "postgres"
 
 postgresql_dev_package: postgresql-server-dev-all
-postgresql_directory: "/etc/postgresql/14"
+postgresql_directory: "/etc/postgresql/14/main"
 
 pgbackrest_directory: "/var/lib/pgbackrest"
 pgbackrest_retention_days: "30"
