@@ -30,7 +30,7 @@
     state: present
   loop:
     - setting: archive_command
-      value: "'pgbackrest --stanza=demo archive-push %p'"
+      value: "'pgbackrest --stanza=main archive-push %p'"
     - setting: archive_mode
       value: "on"
     - setting: max_wal_senders
