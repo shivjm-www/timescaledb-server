@@ -5,11 +5,16 @@
       - pgbackrest
     state: present
 
-- name: Create pgBackRest directory
+- name: Create pgBackRest data directory
   file:
     path: "{{ pgbackrest_directory }}"
     owner: "{{ timescaledb_linux_user }}"
     mode: "0750"
+    state: directory
+
+- name: Create pgBackRest configuration directory
+  file:
+    path: "/etc/pgbackrest"
     state: directory
 
 - name: Configure pgBackRest
