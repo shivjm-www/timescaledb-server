@@ -7,10 +7,15 @@ packer {
   }
 }
 
-variable "vagrant_base_box" {
+variable "hyperv_base_vmcx" {
   type = string
-  # default = "geerlingguy/debian11"
-  default = "trombik/ansible-debian-11-amd64"
+  description = "Base Hyper-V machine with Debian 11 and Ansible. (Must be path to export directory, not .vmcx file.)"
+  default = "./debian11-ansible-vm"
+}
+
+variable "hyperv_switch" {
+  type = string
+  default = "Default Switch"
 }
 
 variable "do_token" {
@@ -33,13 +38,20 @@ variable "do_base_image" {
   default = "debian-11-x64"
 }
 
-source "vagrant" "tsdb_server_local" {
-  source_path = var.vagrant_base_box
-  provider = "virtualbox"
+source "hyperv-vmcx" "tsdb_server_local" {
+  clone_from_vmcx_path = var.hyperv_base_vmcx
+  ssh_username = "box"
+  ssh_password = "box"
+  shutdown_command = "echo 'box' | sudo -S shutdown -P now"
+  guest_additions_mode = "none"
+  headless = true
+  keep_registered = true
+  skip_export = true
   communicator = "ssh"
-  ssh_username = "vagrant"
-  ssh_password = "vagrant"
-  output_dir = ".tsdb-server-local"
+  generation = 2
+  enable_dynamic_memory = true
+  disk_block_size = 1
+  switch_name = var.hyperv_switch
 }
 
 source "digitalocean" "tsdb_server" {
@@ -53,10 +65,10 @@ source "digitalocean" "tsdb_server" {
 }
 
 build {
-  name = "tsdb_server_vagrant_local"
+  name = "tsdb_server"
 
   sources = [
-    "source.vagrant.tsdb_server_local",
+    "source.hyperv-vmcx.tsdb_server_local",
     "source.digitalocean.tsdb_server"
   ]
 
