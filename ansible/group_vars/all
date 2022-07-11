@@ -1,6 +1,7 @@
 ---
 timescaledb_package: timescaledb-2-postgresql-14
 timescaledb_linux_user: "postgres"
+timescaledb_user: "postgres"
 
 postgresql_dev_package: postgresql-server-dev-all
 postgresql_directory: "/etc/postgresql/14/main"
