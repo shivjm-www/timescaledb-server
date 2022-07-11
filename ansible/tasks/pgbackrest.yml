@@ -24,7 +24,7 @@
 
 - name: Configure PostgreSQL
   lineinfile:
-    path: "{{ postgresql_directory }}/postgresql.conf"
+    path: "{{ postgresql_config_directory }}/postgresql.conf"
     regexp: "^\\s*{{ item.setting }}\\s*=\\s*"
     line: "{{ item.setting }} = {{ item.value }}"
     state: present

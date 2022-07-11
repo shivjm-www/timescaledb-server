@@ -39,7 +39,7 @@
 
 - name: Set PostgreSQL to trust everything
   copy:
-    dest: "{{ postgresql_directory }}/pg_hba.conf"
+    dest: "{{ postgresql_config_directory }}/pg_hba.conf"
     content: >-
       host all all 0.0.0.0/0 trust
       local all all trust
@@ -49,18 +49,18 @@
 
 - name: Set PostgreSQL to listen for connections on all addresses
   lineinfile:
-    path: "{{ postgresql_directory }}/postgresql.conf"
+    path: "{{ postgresql_config_directory }}/postgresql.conf"
     line: "listen_addresses = '*'"
 
 - name: Compute MD5 of PostgreSQL configuration
-  stat: path={{ postgresql_directory }}/postgresql.conf get_md5=yes
+  stat: path={{ postgresql_config_directory }}/postgresql.conf get_md5=yes
   register: existing_postgresql
 
 - name: Tune TimescaleDB
   shell: "timescaledb-tune --yes"
 
 - name: Compute new MD5 of PostgreSQL configuration
-  stat: path={{ postgresql_directory }}/postgresql.conf get_md5=yes
+  stat: path={{ postgresql_config_directory }}/postgresql.conf get_md5=yes
   register: new_postgresql
 
 - name: Restart PostgreSQL
