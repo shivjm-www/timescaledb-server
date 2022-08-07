@@ -37,16 +37,6 @@
     update_cache: yes
     state: present
 
-- name: Set PostgreSQL to trust everything
-  copy:
-    dest: "{{ postgresql_config_directory }}/pg_hba.conf"
-    content: |-
-      host all all 0.0.0.0/0 trust
-      local all all trust
-    owner: "{{ timescaledb_linux_user }}"
-    mode: "0600"
-  register: postgresql_trust
-
 - name: Set PostgreSQL to listen for connections on all addresses
   lineinfile:
     path: "{{ postgresql_config_directory }}/postgresql.conf"

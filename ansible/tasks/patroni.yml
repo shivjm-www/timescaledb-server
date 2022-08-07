@@ -1,0 +1,8 @@
+---
+- name: Install Patroni and dependencies
+  pip:
+    name:
+      - psycopg2
+      - cryptography
+      - "patroni[raft]"
+    state: present
