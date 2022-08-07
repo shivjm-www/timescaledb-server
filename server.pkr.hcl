@@ -29,8 +29,8 @@ variable "do_region" {
 
 variable "do_droplet_size" {
   type        = string
-  description = "Size of Droplet to use to build image."
-  default     = "c-4"
+  description = "Size of Droplet to use to build image. Sets the disk size of the image (minimum for future Droplets)."
+  default     = "c-2" # The highest you can go without increasing the disk size.
 }
 
 variable "do_base_image" {
