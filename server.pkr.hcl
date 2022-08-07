@@ -38,30 +38,6 @@ variable "do_base_image" {
   default = "debian-11-x64"
 }
 
-variable "pgbackrest_cipher_pass" {
-  type = string
-}
-
-variable "pgbackrest_s3_bucket" {
-  type = string
-}
-
-variable "pgbackrest_s3_endpoint" {
-  type = string
-}
-
-variable "pgbackrest_s3_region" {
-  type = string
-}
-
-variable "pgbackrest_s3_key" {
-  type = string
-}
-
-variable "pgbackrest_s3_key_secret" {
-  type = string
-}
-
 source "hyperv-vmcx" "tsdb_server_local" {
   clone_from_vmcx_path  = var.hyperv_base_vmcx
   ssh_username          = "box"
@@ -107,14 +83,5 @@ build {
   provisioner "ansible-local" {
     playbook_file = "./ansible/main.yml"
     playbook_dir  = "./ansible"
-
-    extra_arguments = [
-      "--extra-vars", "\"pgbackrest_cipher_pass=${var.pgbackrest_cipher_pass}\"",
-      "--extra-vars", "\"pgbackrest_s3_bucket=${var.pgbackrest_s3_bucket}\"",
-      "--extra-vars", "\"pgbackrest_s3_endpoint=${var.pgbackrest_s3_endpoint}\"",
-      "--extra-vars", "\"pgbackrest_s3_region=${var.pgbackrest_s3_region}\"",
-      "--extra-vars", "\"pgbackrest_s3_key=${var.pgbackrest_s3_key}\"",
-      "--extra-vars", "\"pgbackrest_s3_key_secret=${var.pgbackrest_s3_key_secret}\"",
-    ]
   }
 }

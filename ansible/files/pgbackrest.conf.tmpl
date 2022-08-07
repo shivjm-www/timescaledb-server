@@ -5,17 +5,13 @@ pg1-user={{ timescaledb_user }}
 [global]
 repo1-path={{ pgbackrest_directory }}
 
-# These secrets are being baked into the configuration file. The
-# alternative would be to specify them as environment variables, in
-# which case they would have to be baked into the service file or some
-# sort of .env file, which is hardly better.
-repo1-cipher-pass={{ pgbackrest_cipher_pass }}
+repo1-cipher-pass=REPLACEME_CIPHER_PASS
 repo1-cipher-type=aes-256-cbc
-repo1-s3-bucket={{ pgbackrest_s3_bucket }}
-repo1-s3-endpoint={{ pgbackrest_s3_endpoint }}
-repo1-s3-region={{ pgbackrest_s3_region }}
-repo1-s3-key={{ pgbackrest_s3_key }}
-repo1-s3-key-secret={{ pgbackrest_s3_key_secret }}
+repo1-s3-bucket=REPLACEME_S3_BUCKET
+repo1-s3-endpoint=REPLACEME_S3_ENDPOINT
+repo1-s3-region=REPLACEME_S3_REGION
+repo1-s3-key=REPLACEME_S3_KEY
+repo1-s3-key-secret=REPLACEME_S3_KEY_SECRET
 repo1-type=s3
 
 repo1-bundle=y
