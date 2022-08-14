@@ -5,13 +5,13 @@ pg1-user={{ timescaledb_user }}
 [global]
 repo1-path={{ pgbackrest_directory }}
 
-repo1-cipher-pass=REPLACEME_CIPHER_PASS
+repo1-cipher-pass=$PGBACKREST_CIPHER_PASS
 repo1-cipher-type=aes-256-cbc
-repo1-s3-bucket=REPLACEME_S3_BUCKET
-repo1-s3-endpoint=REPLACEME_S3_ENDPOINT
-repo1-s3-region=REPLACEME_S3_REGION
-repo1-s3-key=REPLACEME_S3_KEY
-repo1-s3-key-secret=REPLACEME_S3_KEY_SECRET
+repo1-s3-bucket=$PGBACKREST_S3_BUCKET
+repo1-s3-endpoint=$PGBACKREST_S3_ENDPOINT
+repo1-s3-region=$PGBACKREST_S3_REGION
+repo1-s3-key=$PGBACKREST_S3_KEY
+repo1-s3-key-secret=$PGBACKREST_S3_KEY_SECRET
 repo1-type=s3
 
 repo1-bundle=y
