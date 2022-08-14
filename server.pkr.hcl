@@ -7,6 +7,10 @@ packer {
   }
 }
 
+locals {
+  starttime = formatdate("YYYYMMDDhhmmss", timestamp())
+}
+
 variable "do_token" {
   type      = string
   sensitive = true
@@ -18,7 +22,7 @@ variable "do_region" {
 
 variable "do_image_name" {
   type    = string
-  default = "timescaledb"
+  default = "packer-timescaledb"
 }
 
 variable "do_spaces_key" {
@@ -174,7 +178,7 @@ build {
     spaces_secret       = var.do_spaces_secret_key
     spaces_region       = var.do_region
     space_name          = var.do_spaces_bucket
-    image_name          = var.do_image_name
+    image_name          = "${var.do_image_name}-${local.starttime}"
     image_description   = "Packer import {{timestamp}}"
     image_regions       = [var.do_region]
     image_tags          = ["custom", "packer", "bastion"]
