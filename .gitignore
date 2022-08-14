@@ -2,3 +2,4 @@
 /output-tsdb_server_local/
 /packer_cache/
 /.auto.pkrvars.hcl
+/.env
