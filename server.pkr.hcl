@@ -92,14 +92,14 @@ variable "password" {
 }
 
 # Adapted from <https://github.com/geerlingguy/packer-boxes/blob/55412993a04d3d81ee0a61559cfd993e6d0907ad/debian11/box-config.json>.
-source "hyperv-iso" "tsdb-fromiso" {
+source "hyperv-iso" "tsdb" {
   iso_url      = var.debian_iso_url
   iso_checksum = var.debian_iso_checksum
 
-  output_directory = ".output/tsdb-fromiso"
+  output_directory = ".output/tsdb"
   disk_size        = var.disk_size
   disk_block_size  = 32
-  vm_name          = "${var.vm_name}-fromiso"
+  vm_name          = var.vm_name
   switch_name      = var.switch_name
   generation       = 1
   headless         = var.headless
@@ -139,10 +139,10 @@ source "hyperv-iso" "tsdb-fromiso" {
 }
 
 build {
-  name = "tsdb-fromiso"
+  name = "tsdb"
 
   sources = [
-    "source.hyperv-iso.tsdb-fromiso"
+    "source.hyperv-iso.tsdb"
   ]
 
   provisioner "shell" {
