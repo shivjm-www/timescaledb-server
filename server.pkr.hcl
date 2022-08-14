@@ -40,12 +40,6 @@ variable "do_spaces_bucket" {
   description = "Spaces bucket (for temporary upload)."
 }
 
-variable "do_droplet_size" {
-  type        = string
-  description = "Size of Droplet to use to build image. Sets the disk size of the image (minimum for future Droplets)."
-  default     = "c-2" # The highest you can go without increasing the disk size.
-}
-
 variable "do_base_image" {
   type    = string
   default = "debian-11-x64"
@@ -64,11 +58,6 @@ variable "debian_iso_checksum" {
 variable "disk_size" {
   type    = number
   default = 8192
-}
-
-variable "vm_name" {
-  type    = string
-  default = "packer-tsdb"
 }
 
 variable "switch_name" {
@@ -103,9 +92,12 @@ source "hyperv-iso" "tsdb" {
   output_directory = ".output/tsdb"
   disk_size        = var.disk_size
   disk_block_size  = 32
-  vm_name          = var.vm_name
   switch_name      = var.switch_name
-  generation       = 1
+
+  # Generation 2 machines use UEFI, which triggers different behaviour
+  # from the Debian installer.
+  generation = 1
+
   headless         = var.headless
   shutdown_command = "echo '${var.password}' | sudo -S shutdown -P now"
   ssh_username     = var.username
@@ -129,10 +121,12 @@ source "hyperv-iso" "tsdb" {
     "grub-installer/bootdev=/dev/sda <wait>",
     "<enter><wait>",
   ]
+
   # Sometimes it’s ready in five seconds, sometimes it’s ready in 30.
   # Better to be safe.
   boot_wait        = "30s"
   ssh_wait_timeout = "600s"
+
   http_content = {
     "/preseed.cfg" = templatefile("${path.root}/http/preseed.cfg", {
       root_password = var.root_password,
@@ -173,15 +167,14 @@ build {
   }
 
   post-processor "digitalocean-import" {
-    api_token           = var.do_token
-    spaces_key          = var.do_spaces_key
-    spaces_secret       = var.do_spaces_secret_key
-    spaces_region       = var.do_region
-    space_name          = var.do_spaces_bucket
-    image_name          = "${var.do_image_name}-${local.starttime}"
-    image_description   = "Packer import {{timestamp}}"
-    image_regions       = [var.do_region]
-    image_tags          = ["custom", "packer", "bastion"]
-    keep_input_artifact = true
+    api_token         = var.do_token
+    spaces_key        = var.do_spaces_key
+    spaces_secret     = var.do_spaces_secret_key
+    spaces_region     = var.do_region
+    space_name        = var.do_spaces_bucket
+    image_name        = "${var.do_image_name}-${local.starttime}"
+    image_description = "TimescaleDB, Promscale, Patroni, and pgBackRest. Placeholders in configuration files. Run `timescaledb-tune --yes` in new Droplets."
+    image_regions     = [var.do_region]
+    image_tags        = ["packer", "bastion"]
   }
 }
