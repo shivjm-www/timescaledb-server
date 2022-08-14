@@ -27,6 +27,26 @@ variable "do_region" {
   type = string
 }
 
+variable "do_image_name" {
+  type    = string
+  default = "timescaledb"
+}
+
+variable "do_spaces_key" {
+  type        = string
+  description = "Spaces access key (for temporary upload)."
+}
+
+variable "do_spaces_secret_key" {
+  type        = string
+  description = "Spaces secret access key (for temporary upload)."
+}
+
+variable "do_spaces_bucket" {
+  type        = string
+  description = "Spaces bucket (for temporary upload)."
+}
+
 variable "do_droplet_size" {
   type        = string
   description = "Size of Droplet to use to build image. Sets the disk size of the image (minimum for future Droplets)."
@@ -205,5 +225,18 @@ build {
   provisioner "shell" {
     execute_command = "echo '${var.password}' | {{.Vars}} sudo -SE bash '{{.Path}}'"
     script          = "scripts/cleanup.sh"
+  }
+
+  post-processor "digitalocean-import" {
+    api_token           = var.do_token
+    spaces_key          = var.do_spaces_key
+    spaces_secret       = var.do_spaces_secret_key
+    spaces_region       = var.do_region
+    space_name          = var.do_spaces_bucket
+    image_name          = var.do_image_name
+    image_description   = "Packer import {{timestamp}}"
+    image_regions       = [var.do_region]
+    image_tags          = ["custom", "packer", "bastion"]
+    keep_input_artifact = true
   }
 }
