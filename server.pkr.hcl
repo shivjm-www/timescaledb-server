@@ -157,8 +157,9 @@ build {
   }
 
   provisioner "ansible-local" {
-    playbook_file = "./ansible/main.yml"
-    playbook_dir  = "./ansible"
+    playbook_file           = "./ansible/main.yml"
+    playbook_dir            = "./ansible"
+    clean_staging_directory = true
   }
 
   provisioner "shell" {
