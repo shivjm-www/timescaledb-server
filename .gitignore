@@ -1,5 +1,5 @@
-/debian11-ansible-vm/
-/output-tsdb_server_local/
+/.output/
 /packer_cache/
 /.auto.pkrvars.hcl
 /.env
+*.log
