@@ -9,6 +9,30 @@ packer {
 
 locals {
   starttime = formatdate("YYYYMMDDhhmmss", timestamp())
+  boot_command = [
+    "<esc><wait><wait>",
+    "install <wait>",
+    " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+    "debian-installer=en_US.UTF-8 <wait>",
+    "auto <wait>",
+    "locale=en_US.UTF-8 <wait>",
+    "kbd-chooser/method=us <wait>",
+    "keyboard-configuration/xkb-keymap=us <wait>",
+    "netcfg/get_hostname={{ .Name }} <wait>",
+    "netcfg/get_domain=vagrantup.com <wait>",
+    "fb=false <wait>",
+    "debconf/frontend=noninteractive <wait>",
+    "console-setup/ask_detect=false <wait>",
+    "console-keymaps-at/keymap=us <wait>",
+    "grub-installer/bootdev=/dev/sda <wait>",
+    "<enter><wait>",
+  ]
+  preseed = templatefile("${path.root}/http/preseed.cfg", {
+    root_password = var.root_password,
+    username      = var.username,
+    password      = var.password,
+  })
+  shutdown_command = "echo '${var.password}' | sudo -S shutdown -P now"
 }
 
 variable "do_token" {
@@ -86,10 +110,9 @@ variable "password" {
 
 # Adapted from <https://github.com/geerlingguy/packer-boxes/blob/55412993a04d3d81ee0a61559cfd993e6d0907ad/debian11/box-config.json>.
 source "hyperv-iso" "tsdb" {
-  iso_url      = var.debian_iso_url
-  iso_checksum = var.debian_iso_checksum
-
-  output_directory = ".output/tsdb"
+  iso_url          = var.debian_iso_url
+  iso_checksum     = var.debian_iso_checksum
+  output_directory = ".output/hyperv"
   disk_size        = var.disk_size
   disk_block_size  = 32
   switch_name      = var.switch_name
@@ -99,28 +122,11 @@ source "hyperv-iso" "tsdb" {
   generation = 1
 
   headless         = var.headless
-  shutdown_command = "echo '${var.password}' | sudo -S shutdown -P now"
+  shutdown_command = local.shutdown_command
   ssh_username     = var.username
   ssh_password     = var.password
 
-  boot_command = [
-    "<esc><wait><wait>",
-    "install <wait>",
-    " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
-    "debian-installer=en_US.UTF-8 <wait>",
-    "auto <wait>",
-    "locale=en_US.UTF-8 <wait>",
-    "kbd-chooser/method=us <wait>",
-    "keyboard-configuration/xkb-keymap=us <wait>",
-    "netcfg/get_hostname={{ .Name }} <wait>",
-    "netcfg/get_domain=vagrantup.com <wait>",
-    "fb=false <wait>",
-    "debconf/frontend=noninteractive <wait>",
-    "console-setup/ask_detect=false <wait>",
-    "console-keymaps-at/keymap=us <wait>",
-    "grub-installer/bootdev=/dev/sda <wait>",
-    "<enter><wait>",
-  ]
+  boot_command = local.boot_command
 
   # Sometimes it’s ready in five seconds, sometimes it’s ready in 30.
   # Better to be safe.
@@ -128,19 +134,34 @@ source "hyperv-iso" "tsdb" {
   ssh_wait_timeout = "600s"
 
   http_content = {
-    "/preseed.cfg" = templatefile("${path.root}/http/preseed.cfg", {
-      root_password = var.root_password,
-      username      = var.username,
-      password      = var.password,
-    }),
+    "/preseed.cfg" = local.preseed,
   }
+}
+
+source "qemu" "testing" {
+  iso_url          = var.debian_iso_url
+  iso_checksum     = var.debian_iso_checksum
+  output_directory = ".output/qemu"
+  shutdown_command = local.shutdown_command
+  disk_size        = "${var.disk_size}M"
+  format           = "qcow2"
+  headless         = true
+  http_content = {
+    "/preseed.cfg" = local.preseed
+  }
+  ssh_username = var.username
+  ssh_password = var.password
+  ssh_timeout  = "60m"
+  boot_wait    = "30s"
+  boot_command = local.boot_command
 }
 
 build {
   name = "tsdb"
 
   sources = [
-    "source.hyperv-iso.tsdb"
+    "source.hyperv-iso.tsdb",
+    "source.qemu.testing"
   ]
 
   provisioner "shell" {
