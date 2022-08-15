@@ -113,6 +113,11 @@ variable "skip_virtualbox_export" {
   default = false
 }
 
+variable "tags" {
+  type    = list(string)
+  default = ["packer", "timescaledb", "promscale", "patroni", "pgbackrest"]
+}
+
 # Adapted from <https://github.com/geerlingguy/packer-boxes/blob/55412993a04d3d81ee0a61559cfd993e6d0907ad/debian11/box-config.json>.
 source "hyperv-iso" "tsdb" {
   iso_url          = var.debian_iso_url
@@ -221,7 +226,7 @@ build {
     image_name        = "${var.do_image_name}-${local.starttime}"
     image_description = "TimescaleDB, Promscale, Patroni, and pgBackRest. Placeholders in configuration files. Run `timescaledb-tune --yes` in new Droplets."
     image_regions     = [var.do_region]
-    image_tags        = ["packer", "timescaledb"]
+    image_tags        = var.tags
 
     # The image can take a long time to become available.
     timeout = "60m"
