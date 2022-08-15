@@ -221,6 +221,9 @@ build {
     image_name        = "${var.do_image_name}-${local.starttime}"
     image_description = "TimescaleDB, Promscale, Patroni, and pgBackRest. Placeholders in configuration files. Run `timescaledb-tune --yes` in new Droplets."
     image_regions     = [var.do_region]
-    image_tags        = ["packer", "bastion"]
+    image_tags        = ["packer", "timescaledb"]
+
+    # The image can take a long time to become available.
+    timeout = "60m"
   }
 }
