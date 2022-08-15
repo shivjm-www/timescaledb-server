@@ -42,19 +42,5 @@
     path: "{{ postgresql_config_directory }}/postgresql.conf"
     line: "listen_addresses = '*'"
 
-- name: Compute MD5 of PostgreSQL configuration
-  stat: path={{ postgresql_config_directory }}/postgresql.conf get_md5=yes
-  register: existing_postgresql
-
-- name: Tune TimescaleDB
+- name: Tune TimescaleDB to create config file
   shell: "timescaledb-tune --yes"
-
-- name: Compute new MD5 of PostgreSQL configuration
-  stat: path={{ postgresql_config_directory }}/postgresql.conf get_md5=yes
-  register: new_postgresql
-
-- name: Restart PostgreSQL
-  service:
-    name: postgresql
-    state: restarted
-  when: "existing_postgresql.stat.md5 != new_postgresql.stat.md5 or postgresql.trust_changed"

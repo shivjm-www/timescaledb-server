@@ -4,6 +4,15 @@
 # Add cloud-init for DigitalOcean.
 apt-get install -y cloud-init
 
+if [[ -f $ISO_PATH ]]; then
+    ISO_DIR=/media/iso
+    mkdir -p $ISO_DIR
+    mount $ISO_PATH $ISO_DIR -o loop
+    sh $ISO_DIR/VBoxLinuxAdditions.run --nox11 uninstall
+    umount $ISO_DIR
+    rm $ISO_PATH
+fi
+
 # Uninstall Hyper-V daemon.
 apt-get remove hyperv-daemons
 
@@ -12,7 +21,7 @@ pip3 uninstall ansible
 apt-get remove python3-pip python3-dev
 
 # Apt cleanup.
-apt autoremove -y
+apt-get autoremove -y
 
 #  Blank netplan machine-id (DUID) so machines get unique ID generated on boot.
 truncate -s 0 /etc/machine-id
