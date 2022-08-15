@@ -21,7 +21,7 @@ pip3 uninstall ansible
 apt-get remove python3-pip python3-dev
 
 # Apt cleanup.
-apt autoremove -y
+apt-get autoremove -y
 
 #  Blank netplan machine-id (DUID) so machines get unique ID generated on boot.
 truncate -s 0 /etc/machine-id
