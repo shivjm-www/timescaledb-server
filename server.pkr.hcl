@@ -32,7 +32,8 @@ locals {
     username      = var.username,
     password      = var.password,
   })
-  shutdown_command = "echo '${var.password}' | sudo -S shutdown -P now"
+  shutdown_command     = "echo '${var.password}' | sudo -S shutdown -P now"
+  guest_additions_path = "/tmp/VBoxGuestAdditions.iso"
 }
 
 variable "do_token" {
@@ -131,29 +132,34 @@ source "hyperv-iso" "tsdb" {
   # Sometimes it’s ready in five seconds, sometimes it’s ready in 30.
   # Better to be safe.
   boot_wait        = "30s"
-  ssh_wait_timeout = "600s"
+  ssh_wait_timeout = "30m"
 
   http_content = {
     "/preseed.cfg" = local.preseed,
   }
 }
 
-source "qemu" "testing" {
+source "virtualbox-iso" "testing" {
   iso_url          = var.debian_iso_url
   iso_checksum     = var.debian_iso_checksum
-  output_directory = ".output/qemu"
+  guest_os_type    = "Debian_64"
+  output_directory = ".output/vb"
   shutdown_command = local.shutdown_command
-  disk_size        = "${var.disk_size}M"
-  format           = "qcow2"
-  headless         = true
+  disk_size        = var.disk_size
+  headless         = var.headless
   http_content = {
     "/preseed.cfg" = local.preseed
   }
   ssh_username = var.username
   ssh_password = var.password
-  ssh_timeout  = "60m"
+  ssh_timeout  = "20m"
   boot_wait    = "30s"
   boot_command = local.boot_command
+  vboxmanage = [
+    ["modifyvm", "{{.Name}}", "--memory", "1024"],
+    ["modifyvm", "{{.Name}}", "--cpus", "1"]
+  ]
+  guest_additions_path = local.guest_additions_path
 }
 
 build {
@@ -161,7 +167,7 @@ build {
 
   sources = [
     "source.hyperv-iso.tsdb",
-    "source.qemu.testing"
+    "source.virtualbox-iso.testing"
   ]
 
   provisioner "shell" {
@@ -170,6 +176,16 @@ build {
     env = {
       USERNAME = var.username
     }
+  }
+
+  provisioner "shell" {
+    inline = [
+      "echo '${var.password}' | {{.Vars}} sudo -SE bash '{{.Path}}'"
+    ]
+    env = {
+      ISO_PATH = local.guest_additions_path
+    }
+    only = ["source.virtualbox-iso.testing"]
   }
 
   provisioner "shell" {
@@ -186,6 +202,9 @@ build {
   provisioner "shell" {
     execute_command = "echo '${var.password}' | {{.Vars}} sudo -SE bash '{{.Path}}'"
     script          = "scripts/cleanup.sh"
+    env = {
+      ISO_PATH = local.guest_additions_path
+    }
   }
 
   post-processor "digitalocean-import" {
@@ -198,5 +217,6 @@ build {
     image_description = "TimescaleDB, Promscale, Patroni, and pgBackRest. Placeholders in configuration files. Run `timescaledb-tune --yes` in new Droplets."
     image_regions     = [var.do_region]
     image_tags        = ["packer", "bastion"]
+    only              = ["source.hyperv-iso.tsdb"]
   }
 }
