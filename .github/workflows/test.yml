@@ -25,6 +25,6 @@ jobs:
         run: packer validate -var-file .github.d/validation-variables.pkr.hcl server.pkr.hcl
       - name: Test build
         run: |
-          packer build -only='*.testing' -var-file .github.d/validation-variables.pkr.hcl server.pkr.hcl
+          packer build -except='*hyperv*,digitalocean-import' -var-file .github.d/validation-variables.pkr.hcl server.pkr.hcl
         env:
           PACKER_LOG: "1"

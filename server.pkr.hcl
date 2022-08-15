@@ -109,6 +109,11 @@ variable "password" {
   sensitive = true
 }
 
+variable "skip_virtualbox_export" {
+  type    = bool
+  default = false
+}
+
 # Adapted from <https://github.com/geerlingguy/packer-boxes/blob/55412993a04d3d81ee0a61559cfd993e6d0907ad/debian11/box-config.json>.
 source "hyperv-iso" "tsdb" {
   iso_url          = var.debian_iso_url
@@ -139,7 +144,7 @@ source "hyperv-iso" "tsdb" {
   }
 }
 
-source "virtualbox-iso" "testing" {
+source "virtualbox-iso" "ci" {
   iso_url          = var.debian_iso_url
   iso_checksum     = var.debian_iso_checksum
   guest_os_type    = "Debian_64"
@@ -160,6 +165,7 @@ source "virtualbox-iso" "testing" {
     ["modifyvm", "{{.Name}}", "--cpus", "1"]
   ]
   guest_additions_path = local.guest_additions_path
+  skip_export          = var.skip_virtualbox_export
 }
 
 build {
@@ -167,7 +173,7 @@ build {
 
   sources = [
     "source.hyperv-iso.tsdb",
-    "source.virtualbox-iso.testing"
+    "source.virtualbox-iso.ci"
   ]
 
   provisioner "shell" {
@@ -185,7 +191,7 @@ build {
     env = {
       ISO_PATH = local.guest_additions_path
     }
-    only = ["source.virtualbox-iso.testing"]
+    only = ["source.virtualbox-iso.ci"]
   }
 
   provisioner "shell" {
@@ -217,6 +223,5 @@ build {
     image_description = "TimescaleDB, Promscale, Patroni, and pgBackRest. Placeholders in configuration files. Run `timescaledb-tune --yes` in new Droplets."
     image_regions     = [var.do_region]
     image_tags        = ["packer", "bastion"]
-    only              = ["source.hyperv-iso.tsdb"]
   }
 }
