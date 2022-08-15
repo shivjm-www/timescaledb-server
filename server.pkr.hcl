@@ -69,11 +69,6 @@ variable "do_spaces_bucket" {
   sensitive   = true
 }
 
-variable "do_base_image" {
-  type    = string
-  default = "debian-11-x64"
-}
-
 variable "debian_iso_url" {
   type    = string
   default = "https://cdimage.debian.org/cdimage/release/11.4.0/amd64/iso-cd/debian-11.4.0-amd64-netinst.iso"
