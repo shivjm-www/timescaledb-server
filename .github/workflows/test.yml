@@ -9,21 +9,22 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
         with:
           packer-version: 1.8.3
+          github-token: "${{ secrets.packer_token }}"
       - name: Initialize
         run: packer init server.pkr.hcl
+        env:
+          PACKER_GITHUB_API_TOKEN: "${{ secrets.packer_token }}"
       - name: Validate
         run: packer validate -var-file .github.d/validation-variables.pkr.hcl server.pkr.hcl
-      - name: Set up QEMU
-        run: "sudo apt-get install -y qemu qemu-system"
       - name: Test build
         run: |
-          packer build --except='digitalocean-import,*hyperv*' -var-file .github.d/validation-variables.pkr.hcl server.pkr.hcl
+          packer build -only='*.testing' -var-file .github.d/validation-variables.pkr.hcl server.pkr.hcl
         env:
           PACKER_LOG: "1"
