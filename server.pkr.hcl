@@ -42,7 +42,8 @@ variable "do_token" {
 }
 
 variable "do_region" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "do_image_name" {
@@ -53,16 +54,19 @@ variable "do_image_name" {
 variable "do_spaces_key" {
   type        = string
   description = "Spaces access key (for temporary upload)."
+  sensitive   = true
 }
 
 variable "do_spaces_secret_key" {
   type        = string
   description = "Spaces secret access key (for temporary upload)."
+  sensitive   = true
 }
 
 variable "do_spaces_bucket" {
   type        = string
   description = "Spaces bucket (for temporary upload)."
+  sensitive   = true
 }
 
 variable "do_base_image" {
