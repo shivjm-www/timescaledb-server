@@ -6,3 +6,9 @@
       - cryptography
       - "patroni[raft]"
     state: present
+
+- name: Install etcd
+  apt:
+    name:
+      - etcd
+    state: present
