@@ -112,7 +112,6 @@ variable "root_password" {
 
 variable "username" {
   type        = string
-  sensitive   = true
   description = "Name of primary user to create during installation. Will have `sudo` privileges."
 }
 
