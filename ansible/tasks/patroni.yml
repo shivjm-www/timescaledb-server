@@ -4,7 +4,7 @@
     name:
       - psycopg2
       - cryptography
-      - "patroni[raft]"
+      - "patroni[etcd,raft]"
     state: present
 
 - name: Install etcd
