@@ -20,4 +20,4 @@
 - name: Configure pgBackRest
   template:
     src: "../files/pgbackrest.conf.tmpl"
-    dest: "/etc/pgbackrest/pgbackrest.conf"
+    dest: "/etc/pgbackrest/pgbackrest.conf.template"
