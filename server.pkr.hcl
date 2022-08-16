@@ -84,8 +84,9 @@ variable "disk_size" {
   default = 8192
 }
 
-variable "switch_name" {
-  type = string
+variable "hyperv_switch" {
+  type        = string
+  description = "Name of network switch to use when building in Hyper-V. Must be bridged. Default switch will not work."
 }
 
 variable "headless" {
@@ -125,7 +126,7 @@ source "hyperv-iso" "tsdb" {
   output_directory = ".output/hyperv"
   disk_size        = var.disk_size
   disk_block_size  = 32
-  switch_name      = var.switch_name
+  switch_name      = var.hyperv_switch
 
   # Generation 2 machines use UEFI, which triggers different behaviour
   # from the Debian installer.
