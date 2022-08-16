@@ -23,7 +23,7 @@ jobs:
         run: packer init server.pkr.hcl
       - name: Build and publish
         run: |
-          packer build -only='*.ci' -var switch_name=ignore server.pkr.hcl
+          packer build -only='*.ci' -var hyperv_switch='' server.pkr.hcl
         env:
           PKR_VAR_do_image_name: "packer-timescaledb-server"
           PKR_VAR_root_password: "${{ secrets.publish_image_root_password }}"

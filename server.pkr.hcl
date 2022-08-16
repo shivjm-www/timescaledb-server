@@ -37,13 +37,15 @@ locals {
 }
 
 variable "do_token" {
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
+  description = "API token for accessing DigitalOcean (required for import)."
 }
 
 variable "do_region" {
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
+  description = "DigitalOcean region to store image in when importing."
 }
 
 variable "do_image_name" {
@@ -53,20 +55,26 @@ variable "do_image_name" {
 
 variable "do_spaces_key" {
   type        = string
-  description = "Spaces access key (for temporary upload)."
+  description = "DigitalOcean Spaces access key (for temporary upload)."
   sensitive   = true
 }
 
 variable "do_spaces_secret_key" {
   type        = string
-  description = "Spaces secret access key (for temporary upload)."
+  description = "DigitalOcean Spaces secret access key (for temporary upload)."
   sensitive   = true
 }
 
 variable "do_spaces_bucket" {
   type        = string
-  description = "Spaces bucket (for temporary upload)."
+  description = "DigitalOcean Spaces bucket (for temporary upload)."
   sensitive   = true
+}
+
+variable "do_image_tags" {
+  type        = list(string)
+  default     = ["packer", "timescaledb", "promscale", "patroni", "pgbackrest"]
+  description = "Tags to apply to DigitalOcean Custom Image."
 }
 
 variable "debian_iso_url" {
@@ -80,42 +88,43 @@ variable "debian_iso_checksum" {
 }
 
 variable "disk_size" {
-  type    = number
-  default = 8192
+  type        = number
+  default     = 8192
+  description = "Initial size of hard disk in megabytes. Must be at least 5 GB. Will be shrunk to match used space as last step."
 }
 
-variable "switch_name" {
-  type = string
+variable "hyperv_switch" {
+  type        = string
+  description = "Name of network switch to use when building in Hyper-V. Must be bridged. Default switch will not work."
 }
 
 variable "headless" {
-  type    = bool
-  default = true
+  type        = bool
+  default     = true
+  description = "Whether to hide builder GUI. Must be `true` in CI environments."
 }
 
 variable "root_password" {
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
+  description = "Desired root password. Used for `sudo`."
 }
 
 variable "username" {
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
+  description = "Name of primary user to create during installation. Will have `sudo` privileges."
 }
 
 variable "password" {
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
+  description = "Password for user created during installation."
 }
 
 variable "skip_virtualbox_export" {
   type    = bool
   default = false
-}
-
-variable "tags" {
-  type    = list(string)
-  default = ["packer", "timescaledb", "promscale", "patroni", "pgbackrest"]
 }
 
 # Adapted from <https://github.com/geerlingguy/packer-boxes/blob/55412993a04d3d81ee0a61559cfd993e6d0907ad/debian11/box-config.json>.
@@ -125,7 +134,7 @@ source "hyperv-iso" "tsdb" {
   output_directory = ".output/hyperv"
   disk_size        = var.disk_size
   disk_block_size  = 32
-  switch_name      = var.switch_name
+  switch_name      = var.hyperv_switch
 
   # Generation 2 machines use UEFI, which triggers different behaviour
   # from the Debian installer.
@@ -226,7 +235,7 @@ build {
     image_name        = "${var.do_image_name}-${local.starttime}"
     image_description = "TimescaleDB, Promscale, Patroni, and pgBackRest. Placeholders in configuration files. Run `timescaledb-tune --yes` in new Droplets."
     image_regions     = [var.do_region]
-    image_tags        = var.tags
+    image_tags        = var.do_image_tags
 
     # The image can take a long time to become available.
     timeout = "60m"
