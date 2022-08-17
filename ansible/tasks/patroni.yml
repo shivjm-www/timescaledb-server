@@ -1,4 +1,9 @@
 ---
+- name: Enable softdog kernel module
+  modprobe:
+    name: softdog
+    state: present
+
 - name: Install Patroni and dependencies
   pip:
     name:
