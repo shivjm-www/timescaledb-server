@@ -1,6 +1,6 @@
 # timescaledb-server
 
-A Packer template for building [a DigitalOcean Custom Image](https://docs.digitalocean.com/products/images/custom-images/) that includes [TimescaleDB](https://www.timescale.com/) with [the Promscale extension](https://www.timescale.com/promscale), [Patroni](https://github.com/zalando/patroni/), and [pgBackRest](https://pgbackrest.org/). These components must be configured through [user data](https://docs.digitalocean.com/products/droplets/how-to/provide-user-data/) or other means at the time of creation of a Droplet.
+A Packer template for building [a DigitalOcean Custom Image](https://docs.digitalocean.com/products/images/custom-images/) that includes [TimescaleDB](https://www.timescale.com/) with [the Promscale extension](https://www.timescale.com/promscale) and [pgBackRest](https://pgbackrest.org/). These components must be configured through [user data](https://docs.digitalocean.com/products/droplets/how-to/provide-user-data/) or other means at the time of creation of a Droplet.
 
 There are two builds: one using Hyper-V for efficient local builds on Windows, and one using VirtualBox for all other platforms (including CI). These are prepared identically save for handling guest additions. Only one should be built at time, e.g.:
 

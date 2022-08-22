@@ -41,6 +41,3 @@
   lineinfile:
     path: "{{ postgresql_config_directory }}/postgresql.conf"
     line: "listen_addresses = '*'"
-
-- name: Tune TimescaleDB to create config file
-  shell: "timescaledb-tune --yes"

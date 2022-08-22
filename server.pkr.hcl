@@ -73,7 +73,7 @@ variable "do_spaces_bucket" {
 
 variable "do_image_tags" {
   type        = list(string)
-  default     = ["packer", "timescaledb", "promscale", "patroni", "pgbackrest"]
+  default     = ["packer", "timescaledb", "promscale", "pgbackrest"]
   description = "Tags to apply to DigitalOcean Custom Image."
 }
 
@@ -112,7 +112,6 @@ variable "root_password" {
 
 variable "username" {
   type        = string
-  sensitive   = true
   description = "Name of primary user to create during installation. Will have `sudo` privileges."
 }
 
@@ -149,8 +148,8 @@ source "hyperv-iso" "tsdb" {
 
   # Sometimes it’s ready in five seconds, sometimes it’s ready in 30.
   # Better to be safe.
-  boot_wait        = "30s"
-  ssh_wait_timeout = "30m"
+  boot_wait        = "45s"
+  ssh_wait_timeout = "10m"
 
   http_content = {
     "/preseed.cfg" = local.preseed,
