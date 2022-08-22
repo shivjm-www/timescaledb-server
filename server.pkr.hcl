@@ -176,8 +176,10 @@ source "virtualbox-iso" "ci" {
     ["modifyvm", "{{.Name}}", "--memory", "1024"],
     ["modifyvm", "{{.Name}}", "--cpus", "1"]
   ]
-  guest_additions_path = local.guest_additions_path
-  skip_export          = var.skip_virtualbox_export
+  hard_drive_discard       = true
+  hard_drive_nonrotational = true
+  guest_additions_path     = local.guest_additions_path
+  skip_export              = var.skip_virtualbox_export
 }
 
 build {
@@ -232,7 +234,7 @@ build {
     spaces_region     = var.do_region
     space_name        = var.do_spaces_bucket
     image_name        = "${var.do_image_name}-${local.starttime}"
-    image_description = "TimescaleDB, Promscale, Patroni, and pgBackRest. Placeholders in configuration files. Run `timescaledb-tune --yes` in new Droplets."
+    image_description = "TimescaleDB, Promscale, and pgBackRest. Placeholders in configuration files. Run `timescaledb-tune --yes` in new Droplets."
     image_regions     = [var.do_region]
     image_tags        = var.do_image_tags
 
