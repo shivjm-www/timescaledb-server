@@ -16,3 +16,39 @@
   become: yes
   tasks:
     - include_tasks: ./tasks/pgbackrest.yml
+
+- name: Set up node_exporter
+  hosts: all
+  become: yes
+  pre_tasks:
+    - name: Create node_exporter cert dir
+      file:
+        path: "/etc/node_exporter"
+        state: directory
+        owner: root
+        group: root
+
+    - name: Create node_exporter private key
+      openssl_privatekey:
+        path: /etc/node_exporter/tls.key
+
+    - name: Create node_exporter CSR
+      openssl_csr:
+        path: /etc/node_exporter/tls.csr
+        privatekey_path: /etc/node_exporter/tls.key
+        common_name: "localhost"
+
+    - name: Create cert and key
+      openssl_certificate:
+        path: /etc/node_exporter/tls.cert
+        csr_path: /etc/node_exporter/tls.csr
+        privatekey_path: /etc/node_exporter/tls.key
+        provider: selfsigned
+  roles:
+    - cloudalchemy.node_exporter
+  vars:
+    node_exporter_tls_server_config:
+      cert_file: /etc/node_exporter/tls.cert
+      key_file: /etc/node_exporter/tls.key
+    # node_exporter_basic_auth_users:
+    #   randomuser: examplepassword

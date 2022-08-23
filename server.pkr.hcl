@@ -216,6 +216,7 @@ build {
   provisioner "ansible-local" {
     playbook_file           = "./ansible/main.yml"
     playbook_dir            = "./ansible"
+    galaxy_file             = "./ansible/meta/requirements.yml"
     clean_staging_directory = true
   }
 
