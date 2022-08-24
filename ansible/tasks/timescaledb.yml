@@ -36,8 +36,3 @@
       - wget
     update_cache: yes
     state: present
-
-- name: Set PostgreSQL to listen for connections on all addresses
-  lineinfile:
-    path: "{{ postgresql_config_directory }}/postgresql.conf"
-    line: "listen_addresses = '*'"

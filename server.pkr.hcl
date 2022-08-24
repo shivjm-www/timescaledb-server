@@ -132,7 +132,7 @@ source "hyperv-iso" "tsdb" {
   iso_checksum     = var.debian_iso_checksum
   output_directory = ".output/hyperv"
   disk_size        = var.disk_size
-  disk_block_size  = 32
+  disk_block_size  = 1
   switch_name      = var.hyperv_switch
 
   # Generation 2 machines use UEFI, which triggers different behaviour
@@ -216,6 +216,7 @@ build {
   provisioner "ansible-local" {
     playbook_file           = "./ansible/main.yml"
     playbook_dir            = "./ansible"
+    galaxy_file             = "./ansible/meta/requirements.yml"
     clean_staging_directory = true
   }
 
