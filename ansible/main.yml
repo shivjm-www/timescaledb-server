@@ -44,6 +44,13 @@
         csr_path: /etc/node_exporter/tls.csr
         privatekey_path: /etc/node_exporter/tls.key
         provider: selfsigned
+  post_tasks:
+    - name: Change ownership of directory
+      file:
+        dest: "/etc/node_exporter"
+        owner: node-exp
+        recurse: yes
+        state: directory
   roles:
     - cloudalchemy.node_exporter
   vars:
