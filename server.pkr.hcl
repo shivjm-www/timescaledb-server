@@ -32,8 +32,7 @@ locals {
     username      = var.username,
     password      = var.password,
   })
-  shutdown_command     = "echo '${var.password}' | sudo -S shutdown -P now"
-  guest_additions_path = "/tmp/VBoxGuestAdditions.iso"
+  shutdown_command = "echo '${var.password}' | sudo -S shutdown -P now"
 }
 
 variable "do_token" {
@@ -143,7 +142,7 @@ source "virtualbox-iso" "tsdb" {
   ]
   hard_drive_discard       = true
   hard_drive_nonrotational = true
-  guest_additions_path     = local.guest_additions_path
+  guest_additions_mode     = "disable"
   skip_export              = var.skip_virtualbox_export
 }
 
@@ -163,15 +162,6 @@ build {
   }
 
   provisioner "shell" {
-    inline = [
-      "echo '${var.password}' | {{.Vars}} sudo -SE bash '{{.Path}}'"
-    ]
-    env = {
-      ISO_PATH = local.guest_additions_path
-    }
-  }
-
-  provisioner "shell" {
     execute_command = "echo '${var.password}' | {{.Vars}} sudo -SE bash '{{.Path}}'"
     script          = "scripts/ansible.sh"
   }
@@ -186,9 +176,6 @@ build {
   provisioner "shell" {
     execute_command = "echo '${var.password}' | {{.Vars}} sudo -SE bash '{{.Path}}'"
     script          = "scripts/cleanup.sh"
-    env = {
-      ISO_PATH = local.guest_additions_path
-    }
   }
 
   post-processor "digitalocean-import" {

@@ -4,15 +4,6 @@
 # Add cloud-init for DigitalOcean.
 apt-get install -y cloud-init
 
-if [[ -f $ISO_PATH ]]; then
-    ISO_DIR=/media/iso
-    mkdir -p $ISO_DIR
-    mount $ISO_PATH $ISO_DIR -o loop
-    sh $ISO_DIR/VBoxLinuxAdditions.run --nox11 uninstall
-    umount $ISO_DIR
-    rm $ISO_PATH
-fi
-
 # Uninstall Ansible and dependencies.
 pip3 uninstall ansible
 apt-get remove python3-pip python3-dev
@@ -27,6 +18,7 @@ ln -s /etc/machine-id /var/lib/dbus/machine-id
 
 # Delete unneeded files.
 rm -f ~/*.sh
+rm -f /tmp/*.{tar,gz,bz2,zip}
 
 # Zero out the rest of the free space using dd, then delete the written file.
 dd if=/dev/zero of=/EMPTY bs=1M
