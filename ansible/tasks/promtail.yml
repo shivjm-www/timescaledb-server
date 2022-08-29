@@ -1,0 +1,53 @@
+---
+- name: Promtail | Install support packages
+  apt:
+    pkg:
+      - unzip
+    state: present
+
+- name: Promtail | Download
+  get_url:
+    url: "{{ promtail_url }}"
+    dest: "/tmp/promtail.zip"
+
+- name: Promtail | Add user
+  user:
+    name: "{{ promtail_username }}"
+    append: yes
+    groups:
+      - adm
+    state: present
+
+- name: Promtail | Extract
+  unarchive:
+    src: "/tmp/promtail.zip"
+    dest: "/usr/local/bin"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ promtail_username }}"
+
+- name: Promtail | Create directory
+  file:
+    path: /opt/promtail
+    owner: "{{ promtail_username }}"
+    group: "{{ promtail_username }}"
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: Promtail | Copy configuration
+  template:
+    src: "promtail.conf.j2"
+    dest: "/opt/promtail/promtail.yaml"
+    mode: "u=rw,go=r"
+
+- name: Promtail | Create service
+  template:
+    src: "promtail.service"
+    dest: "/etc/systemd/system/promtail.service"
+    mode: "u=rw,go=r"
+
+- name: Promtail | Start service
+  systemd:
+    daemon_reload: yes
+    name: promtail
+    enabled: yes
+    state: "started"

@@ -9,3 +9,15 @@ postgresql_config_directory: "/etc/postgresql/14/main"
 pgbackrest_directory: "/var/lib/pgbackrest"
 pgbackrest_retention_days: "30"
 pgbackrest_differential_retention: "5"
+
+postgres_exporter_username: "postgres_exporter"
+postgres_exporter_log_path: "/var/log/postgres_exporter"
+postgres_exporter_version: "0.11.1"
+postgres_exporter_dist: postgres_exporter-{{ postgres_exporter_version }}.linux-amd64
+postgres_exporter_url: "https://github.com/prometheus-community/postgres_exporter/releases/download/v{{ postgres_exporter_version }}/{{ postgres_exporter_dist }}.tar.gz"
+postgres_exporter_dir: "/opt/postgres_exporter"
+postgres_exporter_dist_dir: "{{ postgres_exporter_dir }}/dist"
+
+promtail_version: "2.6.1"
+promtail_url: "https://github.com/grafana/loki/releases/download/v{{ promtail_version }}/promtail-linux-amd64.zip"
+promtail_username: "promtail"

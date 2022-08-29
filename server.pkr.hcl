@@ -32,8 +32,7 @@ locals {
     username      = var.username,
     password      = var.password,
   })
-  shutdown_command     = "echo '${var.password}' | sudo -S shutdown -P now"
-  guest_additions_path = "/tmp/VBoxGuestAdditions.iso"
+  shutdown_command = "echo '${var.password}' | sudo -S shutdown -P now"
 }
 
 variable "do_token" {
@@ -93,11 +92,6 @@ variable "disk_size" {
   description = "Initial size of hard disk in megabytes. Must be at least 5 GB. Will be shrunk to match used space as last step."
 }
 
-variable "hyperv_switch" {
-  type        = string
-  description = "Name of network switch to use when building in Hyper-V. Must be bridged. Default switch will not work."
-}
-
 variable "headless" {
   type        = bool
   default     = true
@@ -126,37 +120,7 @@ variable "skip_virtualbox_export" {
   default = false
 }
 
-# Adapted from <https://github.com/geerlingguy/packer-boxes/blob/55412993a04d3d81ee0a61559cfd993e6d0907ad/debian11/box-config.json>.
-source "hyperv-iso" "tsdb" {
-  iso_url          = var.debian_iso_url
-  iso_checksum     = var.debian_iso_checksum
-  output_directory = ".output/hyperv"
-  disk_size        = var.disk_size
-  disk_block_size  = 1
-  switch_name      = var.hyperv_switch
-
-  # Generation 2 machines use UEFI, which triggers different behaviour
-  # from the Debian installer.
-  generation = 1
-
-  headless         = var.headless
-  shutdown_command = local.shutdown_command
-  ssh_username     = var.username
-  ssh_password     = var.password
-
-  boot_command = local.boot_command
-
-  # Sometimes it’s ready in five seconds, sometimes it’s ready in 30.
-  # Better to be safe.
-  boot_wait        = "45s"
-  ssh_wait_timeout = "10m"
-
-  http_content = {
-    "/preseed.cfg" = local.preseed,
-  }
-}
-
-source "virtualbox-iso" "ci" {
+source "virtualbox-iso" "tsdb" {
   iso_url          = var.debian_iso_url
   iso_checksum     = var.debian_iso_checksum
   guest_os_type    = "Debian_64"
@@ -178,7 +142,7 @@ source "virtualbox-iso" "ci" {
   ]
   hard_drive_discard       = true
   hard_drive_nonrotational = true
-  guest_additions_path     = local.guest_additions_path
+  guest_additions_mode     = "disable"
   skip_export              = var.skip_virtualbox_export
 }
 
@@ -186,8 +150,7 @@ build {
   name = "tsdb"
 
   sources = [
-    "source.hyperv-iso.tsdb",
-    "source.virtualbox-iso.ci"
+    "source.virtualbox-iso.tsdb"
   ]
 
   provisioner "shell" {
@@ -196,16 +159,6 @@ build {
     env = {
       USERNAME = var.username
     }
-  }
-
-  provisioner "shell" {
-    inline = [
-      "echo '${var.password}' | {{.Vars}} sudo -SE bash '{{.Path}}'"
-    ]
-    env = {
-      ISO_PATH = local.guest_additions_path
-    }
-    only = ["source.virtualbox-iso.ci"]
   }
 
   provisioner "shell" {
@@ -223,9 +176,6 @@ build {
   provisioner "shell" {
     execute_command = "echo '${var.password}' | {{.Vars}} sudo -SE bash '{{.Path}}'"
     script          = "scripts/cleanup.sh"
-    env = {
-      ISO_PATH = local.guest_additions_path
-    }
   }
 
   post-processor "digitalocean-import" {

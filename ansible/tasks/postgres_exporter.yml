@@ -1,0 +1,53 @@
+---
+- name: postgres_exporter | Add user
+  user:
+    name: "{{ postgres_exporter_username }}"
+    state: present
+
+- name: postgres_exporter | Create directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ postgres_exporter_username }}"
+    group: "{{ postgres_exporter_username }}"
+    mode: "u=rwx,g=rx,o=rx"
+    recurse: true
+    state: directory
+  loop:
+    - "{{ postgres_exporter_log_path }}"
+    - "{{ postgres_exporter_dist_dir }}/{{ postgres_exporter_dist }}"
+
+- name: postgres_exporter | Download
+  get_url:
+    url: "{{ postgres_exporter_url }}"
+    dest: "/tmp/{{ postgres_exporter_dist }}.tar.gz"
+
+- name: postgres_exporter | Extract
+  unarchive:
+    src: "/tmp/{{ postgres_exporter_dist }}.tar.gz"
+    dest: "{{ postgres_exporter_dist_dir }}"
+    mode: "u=rwx,g=rx,o=rx"
+
+- name: postgres_exporter | Delete archive
+  file:
+    path: "/tmp/{{ postgres_exporter_dist }}.tar.gz"
+    state: absent
+
+- name: postgres_exporter | Symlink executable
+  file:
+    src: "{{ postgres_exporter_dist_dir }}/{{ postgres_exporter_dist }}/postgres_exporter"
+    path: "{{ postgres_exporter_dir }}/postgres_exporter"
+    force: true
+    state: link
+
+- name: postgres_exporter | Create service
+  template:
+    src: "service.j2"
+    dest: "/etc/systemd/system/postgres_exporter.service"
+    mode: "u=rw,go=r"
+
+- name: postgres_exporter | Start service
+  systemd:
+    daemon_reload: true
+    name: postgres_exporter
+    enabled: true
+    state: "started"
