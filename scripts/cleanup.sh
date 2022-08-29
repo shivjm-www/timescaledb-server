@@ -13,9 +13,6 @@ if [[ -f $ISO_PATH ]]; then
     rm $ISO_PATH
 fi
 
-# Uninstall Hyper-V daemon.
-apt-get remove hyperv-daemons
-
 # Uninstall Ansible and dependencies.
 pip3 uninstall ansible
 apt-get remove python3-pip python3-dev
