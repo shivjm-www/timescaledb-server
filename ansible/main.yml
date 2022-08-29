@@ -65,3 +65,28 @@
   become: yes
   tasks:
     - include_tasks: ./tasks/postgres_exporter.yml
+
+- name: Install rsyslog
+  hosts: all
+  become: yes
+  # The role has support for a remote receiver, but it doesn’t quite
+  # match what Promtail needs.
+  post_tasks:
+    - name: rsyslog | Add forwarding rule
+      copy:
+        content: 'action(type="omfwd" protocol="tcp" port="3100" Template="RSYSLOG_SyslogProtocol23Format" TCP_Framing="octet-counted")'
+        dest: "/etc/rsyslog.d/promtail.conf"
+        mode: "0644"
+        owner: "root"
+        group: "root"
+        validate: "rsyslogd -N1 -f %s"
+  roles:
+    - robertdebock.rsyslog
+  vars:
+    rsyslog_config_file_format: advanced
+
+- name: Install Promtail
+  hosts: all
+  become: yes
+  tasks:
+    - include_tasks: ./tasks/promtail.yml
