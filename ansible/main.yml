@@ -59,3 +59,9 @@
       key_file: /etc/node_exporter/tls.key
     # node_exporter_basic_auth_users:
     #   randomuser: examplepassword
+
+- name: Install postgres_exporter
+  hosts: all
+  become: yes
+  tasks:
+    - include_tasks: ./tasks/postgres_exporter.yml
