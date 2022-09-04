@@ -34,10 +34,12 @@
     state: directory
 
 - name: Promtail | Copy configuration
-  template:
-    src: "promtail.conf.j2"
+  copy:
+    src: "promtail.conf.yaml"
     dest: "/opt/promtail/promtail.yaml"
     mode: "u=rw,go=r"
+    owner: "{{ promtail_username }}"
+    group: "{{ promtail_username }}"
 
 - name: Promtail | Create service
   template:
