@@ -23,6 +23,19 @@
     state: present
   register: timescaledb_repo
 
+- name: Install postgresql-common
+  apt:
+    pkg:
+      - postgresql-common
+    update_cache: yes
+
+- name: Disable creating new cluster
+  lineinfile:
+    path: "/etc/postgresql-common/createcluster.conf"
+    line: "create_main_cluster = false"
+    regexp: "^#?create_main_cluster"
+    state: present
+
 - name: Install TimescaleDB and PostgreSQL dev tools
   apt:
     pkg:
@@ -30,9 +43,7 @@
       - timescaledb-tools
       - "{{ postgresql_dev_package }}"
       - gnupg
-      - postgresql-common
       - postgresql-14
       - apt-transport-https
       - wget
-    update_cache: yes
     state: present
