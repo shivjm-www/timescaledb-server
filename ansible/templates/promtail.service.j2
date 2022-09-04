@@ -4,8 +4,9 @@ Description=Promtail
 [Service]
 User={{ promtail_username }}
 WorkingDirectory=/opt/promtail/
+Environment="LOKI_HOST=unknown-loki"
 ExecStartPre=/usr/bin/sleep 30
-ExecStart=/usr/local/bin/promtail-linux-amd64 --config.file=./promtail.yaml
+ExecStart=/usr/local/bin/promtail-linux-amd64 -config.file=./promtail.yaml -config.expand-env=true
 SuccessExitStatus=143
 TimeoutStopSec=10
 Restart=on-failure
