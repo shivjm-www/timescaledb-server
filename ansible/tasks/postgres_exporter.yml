@@ -41,7 +41,7 @@
 
 - name: postgres_exporter | Create service
   template:
-    src: "service.j2"
+    src: "postgres_exporter.service.j2"
     dest: "/etc/systemd/system/postgres_exporter.service"
     mode: "u=rw,go=r"
 

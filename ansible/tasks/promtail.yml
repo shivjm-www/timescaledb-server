@@ -43,7 +43,7 @@
 
 - name: Promtail | Create service
   template:
-    src: "promtail.service"
+    src: "promtail.service.j2"
     dest: "/etc/systemd/system/promtail.service"
     mode: "u=rw,go=r"
 
