@@ -3,7 +3,7 @@ server:
   grpc_listen_port: 0
 
 clients:
-  - url: https://${LOKI_GATEWAY}/loki/api/v1/push
+  - url: https://${LOKI_HOST}/loki/api/v1/push
 
 positions:
   filename: /opt/promtail/positions.yaml
@@ -15,7 +15,7 @@ scrape_configs:
           - localhost
         labels:
           job: varlogs
-          __path__: '/var/log/*log'
+          __path__: "/var/log/*log"
   - job_name: syslog
     syslog:
       listen_address: 0.0.0.0:1514
@@ -24,8 +24,8 @@ scrape_configs:
       labels:
         job: "syslog"
     relabel_configs:
-      - source_labels: ['__syslog_message_hostname']
-        target_label: 'host'
+      - source_labels: ["__syslog_message_hostname"]
+        target_label: "host"
   - job_name: journal
     journal:
       json: false
@@ -34,5 +34,5 @@ scrape_configs:
       labels:
         job: systemd-journal
     relabel_configs:
-      - source_labels: ['__journal__systemd_unit']
-        target_label: 'unit'
+      - source_labels: ["__journal__systemd_unit"]
+        target_label: "unit"
