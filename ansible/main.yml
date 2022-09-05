@@ -74,7 +74,8 @@
   post_tasks:
     - name: rsyslog | Add forwarding rule
       copy:
-        content: 'action(type="omfwd" protocol="tcp" port="3100" Template="RSYSLOG_SyslogProtocol23Format" TCP_Framing="octet-counted")'
+        # Queuing based on <https://utcc.utoronto.ca/~cks/space/blog/sysadmin/PromtailRsyslogForwarderSetup>.
+        content: 'action(type="omfwd" protocol="tcp" port="3100" Template="RSYSLOG_SyslogProtocol23Format" TCP_Framing="octet-counted" KeepAlive="on" action.resumeRetryCount="-1" queue.type="linkedlist" queue.size="50000")'
         dest: "/etc/rsyslog.d/promtail.conf"
         mode: "0644"
         owner: "root"
