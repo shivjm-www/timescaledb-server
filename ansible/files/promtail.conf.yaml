@@ -4,6 +4,8 @@ server:
 
 clients:
   - url: https://${LOKI_HOST}/loki/api/v1/push
+    # cert_file: ${CLIENT_CERTIFICATE_PATH}
+    # key_file: ${CLIENT_KEY_PATH}
 
 positions:
   filename: /opt/promtail/positions.yaml
