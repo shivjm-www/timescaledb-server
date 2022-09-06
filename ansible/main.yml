@@ -1,4 +1,19 @@
 ---
+- name: Configure journald
+  hosts: all
+  become: yes
+  tasks:
+    - name: "Minimize logging"
+      ansible.builtin.lineinfile:
+        dest: "/etc/systemd/journald.conf"
+        regexp: "^.*{{ item.key }}="
+        line: "{{ item.key }}={{ item.value }}"
+      loop:
+        - key: Storage
+          value: volatile
+        - key: MaxRetentionSec
+          value: "8h"
+
 - name: Install TimescaleDB
   hosts: all
   become: yes
