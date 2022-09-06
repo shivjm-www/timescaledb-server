@@ -20,6 +20,8 @@ To skip the DigitalOcean import (leaving the VM as an appliance that can be impo
 packer build -except=digitalocean-import server.pkr.hcl
 ```
 
+journald is configured to store its logs only in memory, so they do not survive reboots.
+
 # Development
 
 The CI builds fail frequently thanks to [rate limiting on GitHub’s end](https://github.com/hashicorp/packer/issues/11259), despite the workflows specifying `PACKER_GITHUB_API_TOKEN`. There’s nothing to be done except wait and retry.
