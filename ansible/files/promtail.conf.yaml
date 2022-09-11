@@ -1,6 +1,5 @@
 server:
-  http_listen_port: 3100
-  grpc_listen_port: 0
+  disable: true
 
 clients:
   - url: https://${LOKI_HOST}/loki/api/v1/push
