@@ -5,8 +5,8 @@ A Packer template for building [a DigitalOcean Custom Image](https://docs.digita
 * [TimescaleDB](https://www.timescale.com/) with the default configuration
 * [The Promscale extension](https://www.timescale.com/promscale)
 * [pgBackRest](https://pgbackrest.org/) with a placeholder configuration
-* [node_exporter](https://github.com/prometheus/node_exporter) listening on port 9100
-* [postgres_exporter](https://github.com/prometheus-community/postgres_exporter/) listening on port 9187
+* [node_exporter](https://github.com/prometheus/node_exporter) listening on port 9100 (self-signed TLS certificate)
+* [postgres_exporter](https://github.com/prometheus-community/postgres_exporter/) listening on port 9187 (self-signed TLS certificate)
 * [Promtail](https://grafana.com/docs/loki/latest/clients/promtail/)…
   * Listening for logs on port 3100
   * Collecting logs from /var/log, syslog (via rsyslog) & journald; and
