@@ -39,6 +39,31 @@
     force: true
     state: link
 
+- name: postgres_exporter | Create private key
+  community.crypto.openssl_privatekey:
+    path: "{{ postgres_exporter_dir }}/cert.key"
+    owner: "{{ postgres_exporter_username }}"
+
+- name: postgres_exporter | Create CSR
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ postgres_exporter_dir }}/cert.key"
+    common_name: "localhost"
+  register: postgres_exporter_csr
+
+- name: postgres_exporter | Create cert and key
+  community.crypto.x509_certificate:
+    path: "{{ postgres_exporter_dir }}/cert.crt"
+    csr_content: "{{ postgres_exporter_csr.csr }}"
+    privatekey_path: "{{ postgres_exporter_dir }}/cert.key"
+    owner: "{{ postgres_exporter_username }}"
+    provider: selfsigned
+
+- name: postgres_exporter | Copy configuration
+  template:
+    src: "postgres_exporter.conf.yaml.j2"
+    dest: "{{ postgres_exporter_dir }}/config.yaml"
+    mode: "u=rw,go=r"
+
 - name: postgres_exporter | Create service
   template:
     src: "postgres_exporter.service.j2"
