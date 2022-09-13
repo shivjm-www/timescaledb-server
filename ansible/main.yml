@@ -36,31 +36,31 @@
   hosts: all
   become: yes
   pre_tasks:
-    - name: Create node_exporter cert dir
+    - name: node_exporter | Create cert dir
       file:
         path: "/etc/node_exporter"
         state: directory
         owner: root
         group: root
 
-    - name: Create node_exporter private key
-      openssl_privatekey:
+    - name: node_exporter | Create private key
+      community.crypto.openssl_privatekey:
         path: /etc/node_exporter/tls.key
 
-    - name: Create node_exporter CSR
-      openssl_csr:
-        path: /etc/node_exporter/tls.csr
+    - name: node_exporter | Create CSR
+      community.crypto.openssl_csr_pipe:
         privatekey_path: /etc/node_exporter/tls.key
         common_name: "localhost"
+      register: node_exporter_csr
 
-    - name: Create cert and key
+    - name: node_exporter | Create cert and key
       openssl_certificate:
         path: /etc/node_exporter/tls.cert
-        csr_path: /etc/node_exporter/tls.csr
+        csr_content: "{{ node_exporter_csr.csr }}"
         privatekey_path: /etc/node_exporter/tls.key
         provider: selfsigned
   post_tasks:
-    - name: Change ownership of directory
+    - name: node_exporter | Change ownership of directory
       file:
         dest: "/etc/node_exporter"
         owner: node-exp
