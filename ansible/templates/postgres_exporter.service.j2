@@ -9,7 +9,7 @@ Group={{ postgres_exporter_username }}
 Environment="DATA_SOURCE_URI=127.0.0.1"
 Environment="DATA_SOURCE_USER=postgres"
 Environment="DATA_SOURCE_PASSWORD=postgres"
-ExecStart={{ postgres_exporter_dir }}/postgres_exporter --auto-discover-databases
+ExecStart={{ postgres_exporter_dir }}/postgres_exporter --auto-discover-databases --web.config.file {{ postgres_exporter_dir }}/config.yaml
 Restart=always
 
 [Install]
