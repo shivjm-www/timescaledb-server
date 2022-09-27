@@ -120,6 +120,12 @@ variable "skip_virtualbox_export" {
   default = false
 }
 
+variable "pgbackrest_enabled" {
+  type        = bool
+  description = "Whether to enable pgBackRest."
+  default     = true
+}
+
 source "virtualbox-iso" "tsdb" {
   iso_url          = var.debian_iso_url
   iso_checksum     = var.debian_iso_checksum
@@ -171,6 +177,7 @@ build {
     playbook_dir            = "./ansible"
     galaxy_file             = "./ansible/meta/requirements.yml"
     clean_staging_directory = true
+    extra_arguments         = ["--extra-vars", "pgbackrest_enabled=${var.pgbackrest_enabled}"]
   }
 
   provisioner "shell" {
