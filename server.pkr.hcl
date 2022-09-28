@@ -126,6 +126,12 @@ variable "pgbackrest_enabled" {
   default     = true
 }
 
+variable "s3_tools_enabled" {
+  type        = bool
+  description = "Whether to install extra tools for uploading backups to object storage."
+  default     = true
+}
+
 source "virtualbox-iso" "tsdb" {
   iso_url          = var.debian_iso_url
   iso_checksum     = var.debian_iso_checksum
@@ -177,7 +183,7 @@ build {
     playbook_dir            = "./ansible"
     galaxy_file             = "./ansible/meta/requirements.yml"
     clean_staging_directory = true
-    extra_arguments         = ["--extra-vars", "pgbackrest_enabled=${var.pgbackrest_enabled}"]
+    extra_arguments         = ["--extra-vars", "'pgbackrest_enabled=${var.pgbackrest_enabled} s3_tools_enabled=${var.s3_tools_enabled}'"]
   }
 
   provisioner "shell" {

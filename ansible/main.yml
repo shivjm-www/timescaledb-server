@@ -33,6 +33,13 @@
     - include_tasks: ./tasks/pgbackrest.yml
       when: pgbackrest_enabled | bool
 
+- name: Install S3 tools
+  hosts: all
+  become: yes
+  tasks:
+    - include_tasks: ./tasks/s3_tools.yml
+      when: s3_tools_enabled | bool
+
 - name: Set up node_exporter
   hosts: all
   become: yes

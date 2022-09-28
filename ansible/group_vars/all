@@ -22,3 +22,6 @@ postgres_exporter_dist_dir: "{{ postgres_exporter_dir }}/dist"
 promtail_version: "2.6.1"
 promtail_url: "https://github.com/grafana/loki/releases/download/v{{ promtail_version }}/promtail-linux-amd64.zip"
 promtail_username: "promtail"
+
+s3_tools_enabled: true
+s4cmd_version: "2.1.0"
