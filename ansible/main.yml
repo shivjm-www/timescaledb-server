@@ -74,6 +74,14 @@
         owner: node-exp
         recurse: yes
         state: directory
+    # Required to write files for textfile collector.
+    - name: node_exporter | Add postgres user to node-exp group
+      user:
+        name: postgres
+        groups:
+          - node-exp
+        append: yes
+        state: present
   roles:
     - cloudalchemy.node_exporter
   vars:
