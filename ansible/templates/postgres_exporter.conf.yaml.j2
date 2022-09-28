@@ -2,3 +2,4 @@ tls_server_config:
   cert_file: "{{ postgres_exporter_dir }}/cert.crt"
   key_file: "{{ postgres_exporter_dir }}/cert.key"
   client_ca_file: "{{ postgres_exporter_dir }}/client_ca.crt"
+  client_auth_type: RequireAndVerifyClientCert
