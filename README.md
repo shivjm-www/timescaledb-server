@@ -4,13 +4,18 @@ A Packer template for building [a DigitalOcean Custom Image](https://docs.digita
 
 * [TimescaleDB](https://www.timescale.com/) with the default configuration
 * [The Promscale extension](https://www.timescale.com/promscale)
-* [pgBackRest](https://pgbackrest.org/) with a placeholder configuration
-* [node_exporter](https://github.com/prometheus/node_exporter) listening on port 9100 (self-signed TLS certificate)
-* [postgres_exporter](https://github.com/prometheus-community/postgres_exporter/) listening on port 9187 (self-signed TLS certificate)
+* [node\_exporter](https://github.com/prometheus/node_exporter) listening on port 9100 (requires TLS certificates)
+* [postgres\_exporter](https://github.com/prometheus-community/postgres_exporter/) listening on port 9187 (requires TLS certificates)
 * [Promtail](https://grafana.com/docs/loki/latest/clients/promtail/)…
   * Listening for logs on port 3100
   * Collecting logs from /var/log, syslog (via rsyslog) & journald; and
   * Configured to forward all logs to an unspecified Loki instance
+
+And these optional components (enabled by default):
+
+* [pgBackRest](https://pgbackrest.org/) with a placeholder configuration (set `enable_pgbackrest` to `false` to disable)
+* [s4cmd](https://github.com/bloomreach/s4cmd) (set `enable_s3_tools` to `false` to disable)
+* [Zstandard](http://www.zstd.net/) (set `enable_s3_tools` to `false` to disable)
 
 Some of these must be configured through [user data](https://docs.digitalocean.com/products/droplets/how-to/provide-user-data/) or other means when deployed. The easiest way is via [the builtin envsubst tool](https://manpages.debian.org/bullseye/gettext-base/envsubst.1.en.html).
 
