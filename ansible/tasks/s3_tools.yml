@@ -1,0 +1,11 @@
+---
+- name: Install Zstandard
+  apt:
+    pkg:
+      - zstd
+    state: present
+
+- name: Install s4cmd
+  pip:
+    name: s4cmd==2.1.0
+    state: present

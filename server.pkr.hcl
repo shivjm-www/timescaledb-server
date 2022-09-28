@@ -120,6 +120,18 @@ variable "skip_virtualbox_export" {
   default = false
 }
 
+variable "enable_pgbackrest" {
+  type        = bool
+  description = "Whether to enable pgBackRest."
+  default     = true
+}
+
+variable "enable_s3_tools" {
+  type        = bool
+  description = "Whether to install extra tools for uploading backups to object storage."
+  default     = true
+}
+
 source "virtualbox-iso" "tsdb" {
   iso_url          = var.debian_iso_url
   iso_checksum     = var.debian_iso_checksum
@@ -171,6 +183,7 @@ build {
     playbook_dir            = "./ansible"
     galaxy_file             = "./ansible/meta/requirements.yml"
     clean_staging_directory = true
+    extra_arguments         = ["--extra-vars", "'enable_pgbackrest=${var.enable_pgbackrest} enable_s3_tools=${var.enable_s3_tools}'"]
   }
 
   provisioner "shell" {
