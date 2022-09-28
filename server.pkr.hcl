@@ -120,13 +120,13 @@ variable "skip_virtualbox_export" {
   default = false
 }
 
-variable "pgbackrest_enabled" {
+variable "enable_pgbackrest" {
   type        = bool
   description = "Whether to enable pgBackRest."
   default     = true
 }
 
-variable "s3_tools_enabled" {
+variable "enable_s3_tools" {
   type        = bool
   description = "Whether to install extra tools for uploading backups to object storage."
   default     = true
@@ -183,7 +183,7 @@ build {
     playbook_dir            = "./ansible"
     galaxy_file             = "./ansible/meta/requirements.yml"
     clean_staging_directory = true
-    extra_arguments         = ["--extra-vars", "'pgbackrest_enabled=${var.pgbackrest_enabled} s3_tools_enabled=${var.s3_tools_enabled}'"]
+    extra_arguments         = ["--extra-vars", "'enable_pgbackrest=${var.enable_pgbackrest} enable_s3_tools=${var.enable_s3_tools}'"]
   }
 
   provisioner "shell" {

@@ -6,7 +6,7 @@ timescaledb_user: "postgres"
 postgresql_dev_package: postgresql-server-dev-all
 postgresql_config_directory: "/etc/postgresql/14/main"
 
-pgbackrest_enabled: true
+enable_pgbackrest: true
 pgbackrest_directory: "/var/lib/pgbackrest"
 pgbackrest_retention_days: "30"
 pgbackrest_differential_retention: "5"
@@ -23,5 +23,5 @@ promtail_version: "2.6.1"
 promtail_url: "https://github.com/grafana/loki/releases/download/v{{ promtail_version }}/promtail-linux-amd64.zip"
 promtail_username: "promtail"
 
-s3_tools_enabled: true
+enable_s3_tools: true
 s4cmd_version: "2.1.0"
