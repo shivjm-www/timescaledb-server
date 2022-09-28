@@ -71,6 +71,7 @@
       cert_file: /etc/node_exporter/tls.crt
       key_file: /etc/node_exporter/tls.key
       client_ca_file: /etc/node_exporter/client_ca.crt
+      client_auth_type: RequireAndVerifyClientCert
 
 - name: Install postgres_exporter
   hosts: all
