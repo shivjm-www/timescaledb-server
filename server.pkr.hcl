@@ -126,6 +126,12 @@ variable "enable_pgbackrest" {
   default     = true
 }
 
+variable "enable_promtail" {
+  type        = bool
+  description = "Whether to enable Promtail."
+  default     = true
+}
+
 variable "enable_s3_tools" {
   type        = bool
   description = "Whether to install extra tools for uploading backups to object storage."
@@ -183,7 +189,7 @@ build {
     playbook_dir            = "./ansible"
     galaxy_file             = "./ansible/meta/requirements.yml"
     clean_staging_directory = true
-    extra_arguments         = ["--extra-vars", "'enable_pgbackrest=${var.enable_pgbackrest} enable_s3_tools=${var.enable_s3_tools}'"]
+    extra_arguments         = ["--extra-vars", "'enable_pgbackrest=${var.enable_pgbackrest} enable_s3_tools=${var.enable_s3_tools} enable_promtail=${var.enable_promtail}'"]
   }
 
   provisioner "shell" {
