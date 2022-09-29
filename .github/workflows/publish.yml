@@ -34,5 +34,6 @@ jobs:
           PKR_VAR_do_spaces_key: "${{ secrets.publish_do_spaces_key }}"
           PKR_VAR_do_spaces_secret_key: "${{ secrets.publish_do_spaces_secret_key }}"
           PKR_VAR_do_spaces_bucket: "${{ secrets.publish_do_spaces_bucket }}"
-          PKR_VAR_pgbackrest_enabled: "false"
+          PKR_VAR_enable_pgbackrest: "false"
+          PKR_VAR_enable_promtail: "false"
           PACKER_LOG: "1"
