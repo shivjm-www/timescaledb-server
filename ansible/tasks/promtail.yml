@@ -1,6 +1,6 @@
 ---
 - name: Promtail | Install rsyslog
-  import_role:
+  include_role:
     name: robertdebock.rsyslog
     vars:
       rsyslog_config_file_format: advanced
